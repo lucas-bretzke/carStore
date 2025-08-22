@@ -87,20 +87,20 @@ const { cars } = storeToRefs(carStore)
 
 const filterName = ref('')
 const filterStatus = ref('')
-const filterPriceMin = ref()
-const filterPriceMax = ref()
-const filterYearMin = ref()
-const filterYearMax = ref()
+const filterPriceMin = ref(null)
+const filterPriceMax = ref(null)
+const filterYearMin = ref(null)
+const filterYearMax = ref(null)
 
 const filteredCars = computed(() => {
   return cars.value.filter((car) => {
-    const matchesName =
-      filterName.value === '' || car.model.toLowerCase().includes(filterName.value.toLowerCase())
+    const nameFilter = filterName.value.trim().toLowerCase()
+    const matchesName = nameFilter === '' || car.model.toLowerCase().includes(nameFilter)
     const matchesStatus = filterStatus.value === '' || car.status === filterStatus.value
-    const matchesPriceMin = filterPriceMin.value == null || car.price >= filterPriceMin.value
-    const matchesPriceMax = filterPriceMax.value == null || car.price <= filterPriceMax.value
-    const matchesYearMin = filterYearMin.value == null || car.year >= filterYearMin.value
-    const matchesYearMax = filterYearMax.value == null || car.year <= filterYearMax.value
+    const matchesPriceMin = filterPriceMin.value === null || car.price >= filterPriceMin.value
+    const matchesPriceMax = filterPriceMax.value === null || car.price <= filterPriceMax.value
+    const matchesYearMin = filterYearMin.value === null || car.year >= filterYearMin.value
+    const matchesYearMax = filterYearMax.value === null || car.year <= filterYearMax.value
     return (
       matchesName &&
       matchesStatus &&
