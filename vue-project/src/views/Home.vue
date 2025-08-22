@@ -2,8 +2,6 @@
   <container>
     <button class="add-car-btn" @click="showModal = true">Adicionar Carro</button>
     <AddCarModal :visible="showModal" @close="showModal = false" @save="handleSave" />
-    <h2 class="text-h5 font-weight-bold mb-4">🏠 Home</h2>
-    <p class="mb-6">Bem-vindo à página inicial da Car Store!</p>
 
     <CarList />
   </container>
