@@ -2,6 +2,43 @@
   <div class="carlist-container">
     <h2 class="carlist-title">Lista de Carros</h2>
 
+    <div class="filters">
+      <input v-model="filterName" type="text" placeholder="Filtrar por nome" class="filter-input" />
+      <select v-model="filterStatus" class="filter-input">
+        <option value="">Todos os status</option>
+        <option value="Disponível">Disponível</option>
+        <option value="Vendido">Vendido</option>
+      </select>
+      <input
+        v-model.number="filterPriceMin"
+        type="number"
+        placeholder="Preço mínimo"
+        class="filter-input"
+        min="0"
+      />
+      <input
+        v-model.number="filterPriceMax"
+        type="number"
+        placeholder="Preço máximo"
+        class="filter-input"
+        min="0"
+      />
+      <input
+        v-model.number="filterYearMin"
+        type="number"
+        placeholder="Ano mínimo"
+        class="filter-input"
+        min="0"
+      />
+      <input
+        v-model.number="filterYearMax"
+        type="number"
+        placeholder="Ano máximo"
+        class="filter-input"
+        min="0"
+      />
+    </div>
+
     <table class="carlist-table">
       <thead>
         <tr>
@@ -13,7 +50,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="car in cars" :key="car.model">
+        <tr v-for="car in filteredCars" :key="car.model">
           <td>{{ car.model }}</td>
           <td>{{ car.year }}</td>
           <td>R$ {{ car.price.toLocaleString('pt-BR') }}</td>
@@ -44,7 +81,36 @@ import { storeToRefs } from 'pinia'
 import { useCarStore } from '../stores/car'
 
 const carStore = useCarStore()
+
+import { computed, ref } from 'vue'
 const { cars } = storeToRefs(carStore)
+
+const filterName = ref('')
+const filterStatus = ref('')
+const filterPriceMin = ref()
+const filterPriceMax = ref()
+const filterYearMin = ref()
+const filterYearMax = ref()
+
+const filteredCars = computed(() => {
+  return cars.value.filter((car) => {
+    const matchesName =
+      filterName.value === '' || car.model.toLowerCase().includes(filterName.value.toLowerCase())
+    const matchesStatus = filterStatus.value === '' || car.status === filterStatus.value
+    const matchesPriceMin = filterPriceMin.value == null || car.price >= filterPriceMin.value
+    const matchesPriceMax = filterPriceMax.value == null || car.price <= filterPriceMax.value
+    const matchesYearMin = filterYearMin.value == null || car.year >= filterYearMin.value
+    const matchesYearMax = filterYearMax.value == null || car.year <= filterYearMax.value
+    return (
+      matchesName &&
+      matchesStatus &&
+      matchesPriceMin &&
+      matchesPriceMax &&
+      matchesYearMin &&
+      matchesYearMax
+    )
+  })
+})
 
 function onView(car: any) {
   alert(`Visualizar: ${car.model}`)
@@ -69,6 +135,18 @@ function onDelete(car: any) {
   font-weight: bold;
   margin-bottom: 16px;
   color: #333;
+}
+
+.filters {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+.filter-input {
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
 }
 
 .carlist-table {
