@@ -9,13 +9,14 @@
           <th>Ano</th>
           <th>Preço</th>
           <th>Status</th>
+          <th>Ações</th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="car in cars" :key="car.model">
           <td>{{ car.model }}</td>
           <td>{{ car.year }}</td>
-          <td>R$ {{ car.price.toLocaleString("pt-BR") }}</td>
+          <td>R$ {{ car.price.toLocaleString('pt-BR') }}</td>
           <td>
             <span
               class="status"
@@ -27,6 +28,11 @@
               {{ car.status }}
             </span>
           </td>
+          <td>
+            <button class="action-btn view" @click="onView(car)">Visualizar</button>
+            <button class="action-btn edit" @click="onEdit(car)">Editar</button>
+            <button class="action-btn delete" @click="onDelete(car)">Excluir</button>
+          </td>
         </tr>
       </tbody>
     </table>
@@ -34,14 +40,23 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue"
+import { storeToRefs } from 'pinia'
+import { useCarStore } from '../stores/car'
 
-const cars = ref([
-  { model: "Toyota Corolla", year: 2021, price: 95000, status: "Disponível" },
-  { model: "Honda Civic", year: 2019, price: 87000, status: "Vendido" },
-  { model: "Chevrolet Onix", year: 2020, price: 65000, status: "Disponível" },
-  { model: "Ford Ka", year: 2018, price: 42000, status: "Vendido" },
-])
+const carStore = useCarStore()
+const { cars } = storeToRefs(carStore)
+
+function onView(car: any) {
+  alert(`Visualizar: ${car.model}`)
+}
+
+function onEdit(car: any) {
+  alert(`Editar: ${car.model}`)
+}
+
+function onDelete(car: any) {
+  alert(`Excluir: ${car.model}`)
+}
 </script>
 
 <style>
@@ -94,5 +109,30 @@ const cars = ref([
 .status.sold {
   background-color: #f44336;
   color: white;
+}
+
+.action-btn {
+  margin-right: 6px;
+  padding: 4px 10px;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.action-btn.view {
+  background-color: #1976d2;
+  color: #fff;
+}
+.action-btn.edit {
+  background-color: #ffb300;
+  color: #fff;
+}
+.action-btn.delete {
+  background-color: #f44336;
+  color: #fff;
+}
+.action-btn:hover {
+  opacity: 0.85;
 }
 </style>
